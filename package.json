@@ -1,0 +1,17 @@
+{
+  "name": "PunchardAPI",
+  "version": "0.0.0",
+  "description": "Assignment 7",
+  "main": "index.js",
+  "dependencies":{
+    "express": "^4.14.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ingthor and Laufey",
+  "license": "MIT",
+  "dependencies": {
+    "express": "~4.14.0"
+  }
+}
