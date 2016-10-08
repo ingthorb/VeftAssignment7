@@ -6,11 +6,9 @@ var jsonParser = bodyParser.json();
 //Middleware to help us
 
 //Manually kept ID, grows everytime there is a company added into the list
-//Note sure if CompanyID++ is allowed, need to test
-//Either const or var
-const CompanyID = 0;
+var CompanyID = 0;
 //Just as CompanID we need to varify this
-const UserID = 0;
+var UserID = 0;
 //companies include id ,name and punchCount
 const companies = [];
 //users contain id, name, email and
@@ -23,14 +21,13 @@ app.get("/api/companies", function(req,res){
 });
 
 
-app.get("/api/companis/:id", function(req,res)
+app.get("/api/companies/:id", function(req,res)
 {
       //Tjekka hvort se int
       var id = parseInt(req.params.id);
       if(id >= companies.length || id < 0)
       {
         res.statusCode(404);
-        //can't get error message
         return res.send("Error 404: No company found");
       }
       res.json(companies[id]);
@@ -41,8 +38,8 @@ app.get("/api/users/:id/punches", function(req,res)
       //TODO: Test
       var User = getUser(req.params.id);
       //The query:
-      //or req.query.comapny
-      var companyID = req.query.company.id;
+      //or req.query.comapny.id
+      var companyID = req.query.company;
       if(companyID == undefined)
       {
         //Only return the punches list for the user
@@ -52,10 +49,13 @@ app.get("/api/users/:id/punches", function(req,res)
         //Return all the punches for said company
         var puncheslist = User.punches;
         var returnlist = [];
+        var id = parseInt(req.params.id);
+        console.log("************************");
+        console.log(companyID);
         for(i = 0; i < puncheslist.length; i++)
         {
           var temp = puncheslist[i];
-          if(id == temp.id)
+          if(companyID == temp.id)
           {
             returnlist.push(temp);
           }
@@ -69,20 +69,20 @@ app.get("/api/users", function(req,res){
   res.json(users);
 });
 
-app.post("api/users", jsonParser, function(req, res)
+app.post("/api/users", jsonParser, function(req, res)
 {
   var temp = req.body;
-  var tempUser = JSON.parse(temp);
-  console.log(tempUser);
-  if(tempUser.name == undefined || tempUser.email == undefined)
+//  var tempUser = JSON.parse(temp);
+//  console.log(tempUsebr);
+  if(temp.name == undefined || temp.email == undefined)
   {
-    res.statusCode(400);
+    res.statusCode = 400;
     return res.send("Error 400: Post syntax incorrect");
   }
   var newUser = {
     id : UserID,
-    name : tempUser.name,
-    email : tempUser.email,
+    name : temp.name,
+    email : temp.email,
     punches : []
   };
   users.push(newUser);
@@ -90,12 +90,12 @@ app.post("api/users", jsonParser, function(req, res)
   res.json(true);
 });
 
-app.post("api/companies", jsonParser, function(req, res)
+app.post("/api/companies", jsonParser, function(req, res)
 {
     var newComp = req.body;
     if(newComp.name == undefined || newComp.punchCount == undefined)
     {
-      res.statusCode(400);
+      res.statusCode = 400;
       return res.send("Error 400: Post syntax incorrect");
     }
     var newCompany = {
@@ -117,13 +117,12 @@ app.post("/api/users/:id/punches", jsonParser, function(req,res)
       var temp = User.punches;
       if(newpunch.id == undefined)
       {
-        res.statusCode(400);
+        res.statusCode = 400;
         return res.send("Error 400: Post syntax incorrect");
       }
       else if( companies[newpunch.id] == undefined)
       {
-        res.statusCode(404);
-        //can't get error message
+        res.statusCode = 404;
         return res.send("Error 404: No company found");
       }
       var now = new Date();
@@ -142,7 +141,7 @@ function getUser(id)
   var id = parseInt(id);
   if(id >= users.length || id < 0)
   {
-    res.statusCode(404);
+    res.statusCode = 404;
     return res.send("Error 404: No company found");
   }
   var User = users[id];
