@@ -1,5 +1,6 @@
 To add the dependencies in this project you need to run this command:
 npm install express
+npm install body-parser
 
 Helper guide:
 http://blog.modulus.io/nodejs-and-express-create-rest-api
@@ -9,4 +10,5 @@ Node index.js
 
 
 08.10.2016
-Need to test all the functions
+Need to test all the functions, the post functions not working
+Parsing the frombody is bugging

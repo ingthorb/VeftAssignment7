@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
-app.use(express.bodyParser());
+var bodyParser = require('body-parser');
+
+var jsonParser = bodyParser.json();
 //Middleware to help us
 
 //Manually kept ID, grows everytime there is a company added into the list
@@ -20,6 +22,7 @@ app.get("/api/companies", function(req,res){
   res.json(companies);
 });
 
+
 app.get("/api/companis/:id", function(req,res)
 {
       //Tjekka hvort se int
@@ -27,6 +30,7 @@ app.get("/api/companis/:id", function(req,res)
       if(id >= companies.length || id < 0)
       {
         res.statusCode(404);
+        //can't get error message
         return res.send("Error 404: No company found");
       }
       res.json(companies[id]);
@@ -48,7 +52,7 @@ app.get("/api/users/:id/punches", function(req,res)
         //Return all the punches for said company
         var puncheslist = User.punches;
         var returnlist = [];
-        for(int i = 0; i < puncheslist.length; i++)
+        for(i = 0; i < puncheslist.length; i++)
         {
           var temp = puncheslist[i];
           if(id == temp.id)
@@ -65,9 +69,11 @@ app.get("/api/users", function(req,res){
   res.json(users);
 });
 
-app.post("api/users", function(req, res)
+app.post("api/users", jsonParser, function(req, res)
 {
-  var tempUser = req.body;
+  var temp = req.body;
+  var tempUser = JSON.parse(temp);
+  console.log(tempUser);
   if(tempUser.name == undefined || tempUser.email == undefined)
   {
     res.statusCode(400);
@@ -84,7 +90,7 @@ app.post("api/users", function(req, res)
   res.json(true);
 });
 
-app.post("api/companies", function(req, res)
+app.post("api/companies", jsonParser, function(req, res)
 {
     var newComp = req.body;
     if(newComp.name == undefined || newComp.punchCount == undefined)
@@ -102,17 +108,23 @@ app.post("api/companies", function(req, res)
     res.json(true);
 });
 
-app.post("/api/users/:id/punches", function(req,res)
+app.post("/api/users/:id/punches", jsonParser, function(req,res)
 {
     //Do we really need the time when the punch was created?
     //The id of the punch is of the company
       var newpunch = req.body;
       var User = getUser(req.params.id);
       var temp = User.punches;
-      if(newpunch.id == undefined || companies[newpunch.id] == undefined)
+      if(newpunch.id == undefined)
       {
         res.statusCode(400);
         return res.send("Error 400: Post syntax incorrect");
+      }
+      else if( companies[newpunch.id] == undefined)
+      {
+        res.statusCode(404);
+        //can't get error message
+        return res.send("Error 404: No company found");
       }
       var now = new Date();
       var punch = {
@@ -124,7 +136,7 @@ app.post("/api/users/:id/punches", function(req,res)
 });
 
 //Simple helper function to shorten code
-function getUser(int id)
+function getUser(id)
 {
   //Just to check if integer
   var id = parseInt(id);
