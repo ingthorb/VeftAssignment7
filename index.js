@@ -7,7 +7,7 @@ var jsonParser = bodyParser.json();
 
 //Manually kept ID, grows everytime there is a company added into the list
 var CompanyID = 0;
-//Just as CompanID we need to varify this
+//Just as CompanID
 var UserID = 0;
 //companies include id ,name and punchCount
 const companies = [];
@@ -35,10 +35,8 @@ app.get("/api/companies/:id", function(req,res)
 
 app.get("/api/users/:id/punches", function(req,res)
 {
-      //TODO: Test
       var User = getUser(req.params.id);
       //The query:
-      //or req.query.comapny.id
       var companyID = req.query.company;
       if(companyID == undefined)
       {
@@ -50,8 +48,6 @@ app.get("/api/users/:id/punches", function(req,res)
         var puncheslist = User.punches;
         var returnlist = [];
         var id = parseInt(req.params.id);
-        console.log("************************");
-        console.log(companyID);
         for(i = 0; i < puncheslist.length; i++)
         {
           var temp = puncheslist[i];
@@ -72,8 +68,6 @@ app.get("/api/users", function(req,res){
 app.post("/api/users", jsonParser, function(req, res)
 {
   var temp = req.body;
-//  var tempUser = JSON.parse(temp);
-//  console.log(tempUsebr);
   if(temp.name == undefined || temp.email == undefined)
   {
     res.statusCode = 400;
@@ -137,7 +131,6 @@ app.post("/api/users/:id/punches", jsonParser, function(req,res)
 //Simple helper function to shorten code
 function getUser(id)
 {
-  //Just to check if integer
   var id = parseInt(id);
   if(id >= users.length || id < 0)
   {
