@@ -7,7 +7,7 @@ var jsonParser = bodyParser.json();
 
 //Manually kept ID, grows everytime there is a company added into the list
 var CompanyID = 0;
-//Just as CompanID
+//Just as CompanID we need to varify this
 var UserID = 0;
 //companies include id ,name and punchCount
 const companies = [];
@@ -27,7 +27,7 @@ app.get("/api/companies/:id", function(req,res)
       var id = parseInt(req.params.id);
       if(id >= companies.length || id < 0)
       {
-        res.statusCode(404);
+        res.statusCode = 404;
         return res.send("Error 404: No company found");
       }
       res.json(companies[id]);
@@ -45,6 +45,11 @@ app.get("/api/users/:id/punches", function(req,res)
       }
       else {
         //Return all the punches for said company
+        if(companyID > companies.length || companyID < 0)
+        {
+          res.statusCode = 404;
+          return res.send("Error 404: No company found");
+        }
         var puncheslist = User.punches;
         var returnlist = [];
         var id = parseInt(req.params.id);
@@ -104,8 +109,7 @@ app.post("/api/companies", jsonParser, function(req, res)
 
 app.post("/api/users/:id/punches", jsonParser, function(req,res)
 {
-    //Do we really need the time when the punch was created?
-    //The id of the punch is of the company
+      //The id of the punch is of the company
       var newpunch = req.body;
       var User = getUser(req.params.id);
       var temp = User.punches;
