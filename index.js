@@ -23,7 +23,6 @@ app.get("/api/companies", function(req,res){
 
 app.get("/api/companies/:id", function(req,res)
 {
-      //Tjekka hvort se int
       var id = parseInt(req.params.id);
       if(id >= companies.length || id < 0)
       {
@@ -45,14 +44,13 @@ app.get("/api/users/:id/punches", function(req,res)
       }
       else {
         //Return all the punches for said company
-        if(companyID > companies.length || companyID < 0)
+        if(companyID >= companies.length || companyID < 0)
         {
           res.statusCode = 404;
           return res.send("Error 404: No company found");
         }
         var puncheslist = User.punches;
         var returnlist = [];
-        var id = parseInt(req.params.id);
         for(i = 0; i < puncheslist.length; i++)
         {
           var temp = puncheslist[i];
