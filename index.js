@@ -123,7 +123,7 @@ app.post("/api/users/:id/punches", jsonParser, function(req,res)
         res.statusCode = 404;
         return res.send("Error 404: No company found");
       }
-      var now = new Date();
+      var now = new Date().toString();
       var punch = {
         id : newpunch.id,
         created : now
